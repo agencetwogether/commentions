@@ -7,5 +7,6 @@
         :per-page="$getPerPage()"
         :load-more-label="$getLoadMoreLabel()"
         :per-page-increment="$getPerPageIncrement()"
+        :readonly="$isReadonly() ?? false"
     />
 </x-dynamic-component>

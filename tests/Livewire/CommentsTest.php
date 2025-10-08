@@ -7,6 +7,8 @@ use Tests\Models\Post;
 use Tests\Models\User;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Livewire\livewire;
 
 test('can create a comment', function () {
@@ -27,7 +29,7 @@ test('can create a comment', function () {
         ->assertSet('commentBody', '')
         ->assertDispatched('comment:saved');
 
-    $this->assertDatabaseHas('comments', [
+    assertDatabaseHas('comments', [
         'body' => 'This is a test comment',
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,
@@ -36,9 +38,9 @@ test('can create a comment', function () {
 
     Event::assertDispatched(CommentWasCreatedEvent::class, function ($event) use ($post, $user) {
         return $event->comment->body === 'This is a test comment' &&
-               $event->comment->commentable_id === $post->id &&
-               $event->comment->commentable_type === Post::class &&
-               $event->comment->author_id === $user->id;
+            $event->comment->commentable_id === $post->id &&
+            $event->comment->commentable_type === Post::class &&
+            $event->comment->author_id === $user->id;
     });
 });
 
@@ -56,7 +58,7 @@ test('comment creation requires body', function () {
         ->call('save')
         ->assertHasErrors(['commentBody' => 'required']);
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,
     ]);
@@ -75,7 +77,7 @@ test('guests cannot create comments', function () {
             ->call('save');
     })->toThrow(TypeError::class);
 
-    $this->assertDatabaseMissing('comments', [
+    assertDatabaseMissing('comments', [
         'body' => 'This is a test comment',
         'commentable_id' => $post->id,
         'commentable_type' => Post::class,

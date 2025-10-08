@@ -31,4 +31,5 @@ return [
     'notification_unsubscribed' => 'Désabonné des notifications',
     'notification_comment_deleted' => 'Commentaire supprimé',
 
+    'save_record_first' => 'Enregistrer d\'abord pour activer les commentaires.',
 ];
