@@ -67,4 +67,9 @@ class Comments extends Component
     {
         return  __('commentions::comments.placeholder');
     }
+
+    public function getNoMatch(): string
+    {
+        return  __('commentions::comments.no-match');
+    }
 }

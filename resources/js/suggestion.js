@@ -1,33 +1,12 @@
 import tippy from "tippy.js";
 
-const insertMention = (editor, range, props) => {
-    // delete the existing text before insertion
-    editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .insertContentAt(range, [
-            {
-                type: 'mention',
-                attrs: props,
-            },
-            {
-                type: 'text',
-                text: ' ',
-            },
-        ])
-        .run()
-
-    // get reference to `window` object from editor element, to support cross-frame JS usage
-    editor.view.dom.ownerDocument.defaultView?.getSelection()?.collapseToEnd();
-};
-
-const renderSuggestionsComponent = (items) => {
+const renderSuggestionsComponent = (items, noMatch) => {
     let filteredItems = [];
 
     Alpine.store('filamentCommentsMentionsFiltered', {
         items: [],
         selectedIndex: 0,
+        noMatch: noMatch,
     });
 
     return {
@@ -41,8 +20,6 @@ const renderSuggestionsComponent = (items) => {
                 )
                 .slice(0, 5);
 
-            console.log('filteredItems', items, filteredItems, query);
-
             Alpine.store('filamentCommentsMentionsFiltered').items = filteredItems;
             Alpine.store('filamentCommentsMentionsFiltered').selectedIndex = 0;
 
@@ -50,31 +27,22 @@ const renderSuggestionsComponent = (items) => {
         },
 
         command: ({ editor, range, props }) => {
-            // increase range.to by one when the next node is of type "text"
-            // and starts with a space character
-            const nodeAfter = editor.view.state.selection.$to.nodeAfter
-            const overrideSpace = nodeAfter?.text?.startsWith(' ')
+            try {
+                const attrs = {
+                    id: props.id ?? props.label ?? props.name,
+                    label: props.label ?? props.name ?? String(props.id ?? ''),
+                };
 
-            if (editor.view.state.mention$.text.length > 1) {
-                range.to = range.from + (editor.view.state.mention$.text.length - 1);
-            }
-
-            if (overrideSpace) {
-                range.to += 1
-            }
-
-            let attempts = 3;
-            let success = false;
-
-            while (attempts > 0 && !success) {
-                try {
-                    insertMention(editor, range, props);
-                    success = true;
-                } catch (error) {
-                    attempts--;
-                    range.to -= 1;
-                }
-            }
+                // Replace the trigger + query with the mention node and a trailing space
+                editor
+                    .chain()
+                    .focus()
+                    .insertContentAt({ from: range.from, to: range.to }, [
+                        { type: 'mention', attrs },
+                        { type: 'text', text: ' ' },
+                    ])
+                    .run();
+            } catch (error) {}
         },
 
         render: () => {
@@ -108,6 +76,7 @@ const renderSuggestionsComponent = (items) => {
                                         :class="{ 'comm:bg-gray-100': $store.filamentCommentsMentionsFiltered.selectedIndex === index }"
                                     ></div>
                                 </template>
+                                 <div x-show.important="$store.filamentCommentsMentionsFiltered.items.length === 0" class="mention-no-match" x-text="$store.filamentCommentsMentionsFiltered.noMatch"></div>
                             `;
                             return container;
                         })(),

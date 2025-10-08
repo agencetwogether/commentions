@@ -5,7 +5,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import suggestion from './suggestion'
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('editor', (content, mentions, component, placeholder) => {
+    Alpine.data('editor', (content, mentions, component, placeholder, noMatch) => {
         let editor
 
         return {
@@ -22,7 +22,7 @@ document.addEventListener('alpine:init', () => {
                             HTMLAttributes: {
                                 class: 'mention',
                             },
-                            suggestion: suggestion(mentions),
+                            suggestion: suggestion(mentions, noMatch),
                         }),
                         Placeholder.configure({
                             placeholder: placeholder,

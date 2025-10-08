@@ -40,6 +40,9 @@
     padding: 5px 10px;
     cursor: pointer;
 }
+.mention-no-match {
+    @apply comm:flex comm:w-full comm:gap-2 comm:p-3 comm:text-sm comm:font-medium comm:text-gray-400;
+}
 
 .mention-item:hover {
     @apply comm:bg-gray-100;

@@ -8,7 +8,7 @@
                 {{-- tiptap editor --}}
                 <div class="comm:relative tip-tap-container comm:mb-2" x-on:click="wasFocused = true" wire:ignore>
                     <div
-                        x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()))"
+                        x-data="editor(@js($commentBody), @js($this->mentions), 'comments', @js($this->getPlaceholder()), @js($this->getNoMatch()))"
                     >
                         <div x-ref="element"></div>
                     </div>

@@ -3,6 +3,7 @@
 return [
     'label' => 'Commentaires',
     'placeholder' => 'Rédiger votre commentaire...',
+    'no-match' => 'Aucun résultat trouvé',
     'no_comments_yet' => 'Aucun commentaire pour le moment.',
 
     'user_avatar_alt' => 'Avatar de l\'utilisateur',
