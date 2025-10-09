@@ -41,7 +41,8 @@
                             icon="heroicon-s-pencil-square"
                             wire:click="edit"
                             size="xs"
-                            color="gray"
+                            color="primary"
+                            tooltip="Editer le commentaire"
                         />
                     @endif
 
@@ -54,7 +55,8 @@
                                 <x-filament::icon-button
                                     icon="heroicon-s-trash"
                                     size="xs"
-                                    color="gray"
+                                    color="danger"
+                                    tooltip="Supprimer le commentaire"
                                 />
                             </x-slot>
 
